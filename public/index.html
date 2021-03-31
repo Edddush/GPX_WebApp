@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>GPS Data Viewer</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="GPS Data Viewer">
+    <meta name="keywords" content="GPS Data Viewer">
+    <meta name="author" content="GPS Data Viewer">
+    <!-- Load jquery, bootstrap -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <!-- Custom CSS End -->
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center" id="fileLog" >File Log Panel</h1>
+        <div id="1">
+            <div id="filelogTableDiv" class="table-wrapper-scroll-y my-custom-scrollbar">
+                <table id="filelogTable" class="table table-striped table-dark" style="table layout: auto;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col" style="width: 80px; text-align: center;">File name <br> (click to download)</th>
+                            <th scope="col" style="width: 40px; text-align: center;">Version</th>
+                            <th scope="col" style="width: 80px; text-align: center;">Creator</th>
+                            <th scope="col" style="width: 40px; text-align: center;">Number of waypoints</th>
+                            <th scope="col" style="width: 40px; text-align: center;">Number of routes</th>
+                            <th scope="col" style="width: 40px; text-align: center;">Number of tracks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="files">
+                        <tr>
+                            <th scope="row" style="width: 50px; text-align: center;">No Files</th>
+                            <td style = " width: 40px; text-align: center;">0.0</td>
+                            <td style = " width: 80px; text-align: center;">ED</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                        </tr>
+                        <tr>
+                        <!-- <th scope="row" style="width: 40px; text-align: center;"> <a href="simple.gpx" download>simple.gpx</th> -->
+                            <th scope="row" style="width: 50px; text-align: center;">No files</th>
+                            <td style = " width: 40px; text-align: center;">0.0</td>
+                            <td style = " width: 80px; text-align: center;">ED</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                            <td style = " width: 40px; text-align: center;">1.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <form ref='uploadForm'
+                id='uploadForm'
+                action='/upload'
+                method='post'
+                encType="multipart/form-data">
+                <div class="form-group">
+                    <input type="file" name="uploadFile" class="btn btn-dark">
+                    <input type='submit' value='Upload' class="btn btn-primary">
+                </div>
+            </form>
+
+        </div>
+
+        <h1 style="text-align: center" id="GPX View Panel">GPX View Panel</h1>
+        <div id="2">
+            <div class="table-wrapper-scroll-y my-custom-scrollbar_drop">
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select File
+                    </button>
+                    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="dropdown">
+
+                    </div>
+                </div>
+
+                <div> <h3 id="GPXviewPanel" style="text-align: center;"> </h3> </div>
+                <div id="GPX View Panel" class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <table id="GPX View Panel" class="table table-bordered" style="table-layout: auto;">
+                        <thead class="bg-light">
+                            <tr>
+                                <th scope="col" style="text-align: center;">Component</th>
+                                <th scope="col" style="text-align: center;">Name</th>
+                                <th scope="col" style="text-align: center;">Number of Points</th>
+                                <th scope="col" style="text-align: center;">Length</th>
+                                <th scope="col" style="text-align: center;">Loop</th>
+                                <th scope="col" style="text-align: center;">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="routes">
+                            <tr>
+                            <th scope="row" style="text-align: center;">Route 0</th>
+                            <td style = "text-align: center;">No data</td>
+                            <td style = "text-align: center;">0</td>
+                            <td style = "text-align: center;">0</td>
+                            <td style = "text-align: center;">false</td>
+                            <td style = "text-align: center;">
+                                <button type="button" class="btn btn-secondary btn-sm" >Rename</button>
+                                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Show Other Data</button>
+                                <!-- <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">close</button> -->
+                            </td>
+                            </tr>
+
+                            <tr>
+                            <th scope="row" style="width: 50px; text-align: center;">Route 0</th>
+                            <td style = "text-align: center;">No data</td>
+                            <td style = "text-align: center;">0</td>
+                            <td style = "text-align: center;">0</td>
+                            <td style = "text-align: center;">false</td>
+                            <td style = "text-align: center;">
+                                <button type="button" class="btn btn-secondary btn-sm" >Rename</button>
+                                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Show Other Data</button>
+                                <!-- <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">close</button> -->
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <h3 style="text-align: left" id="Create GPX">Create Your own GPX</h3>
+        <form class="form-inline">
+            <div class="input-group mb-2 mr-sm-2">
+                <input type="text" class="form-control" id="validationFileName" placeholder="Filename" aria-describedby="inputGroupPrepend2" required>
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroupPrepend2">.gpx</span>
+                </div>
+              </div>
+
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormVersion" placeholder="version" required>
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormCreator" placeholder="creator" required>
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormPoints" placeholder="# of Waypoints">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormRoutes" placeholder="# of Routes">
+            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormTracks" placeholder="# of Tracks">
+
+            <button type="submit" class="btn btn-primary mb-2">Create GPX</button>
+        </form>
+
+
+        <h3 style="text-align: left" id="Create Route">Create Your own Route</h3>
+        <form class="form-inline">
+            <div class="input-group mb-2 mr-sm-2" id="routeFile">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownRoute"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Select File
+                    </button>
+                    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="dropdown">
+
+                    </div>
+                </div>
+
+            </div>
+                <input type="text" class="form-control mb-2 mr-sm-2" id="lon" placeholder="Longitude" disabled required>
+
+                <input type="text" class="form-control mb-2 mr-sm-2" id="lat" placeholder="Latitude" disabled required>
+
+            <button type="submit" class="btn btn-primary mb-2">Add route</button>
+        </form>
+
+        <h3 style="text-align: left" id="FindPath">Find Path Between</h3>
+        <form class="form-inline">
+            <div class="input-group mb-2 mr-sm-2" id="path">
+                <div class="form-row">
+                    <div class="col-md-6 mb-3">
+                        <label for="lonstart">START</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonstart" placeholder="Longitude" disabled required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="latstart" placeholder="Latitude" disabled required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="col-md-6 mb-2">
+                        <label for="lonend">END</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonend" placeholder="Longitude" disabled required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="latend" placeholder="Latitude" disabled required>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mb-2">Find path</button>
+        </form>
+
+    <!-- Leave me at the bottom of body -->
+    <script src="/index.js"></script>
+</body>
+</html>
