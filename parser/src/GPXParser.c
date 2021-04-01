@@ -1473,7 +1473,13 @@ char* trackToJSON(const Track *tr){
     float length = round10(getTrackLen(tr));
     bool loop = isLoopTrack(tr, 10.0);
     char loopVal[6];
- 
+    int points = 0;
+
+    for(int i = 0; i < getLength(tr->segments); i++){
+        points += tr->segments[i].length;
+        printf("%d\n", tr->segments[i].length);
+    }
+
     if(loop){
         strcpy(loopVal, "true");
     } else{
