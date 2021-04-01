@@ -1473,12 +1473,15 @@ char* trackToJSON(const Track *tr){
     float length = round10(getTrackLen(tr));
     bool loop = isLoopTrack(tr, 10.0);
     char loopVal[6];
-    int points = 0;
+    int points = 0; 
+    
+    ListIterator iter = createIterator((List *) tr->segments);
+    TrackSegment * current = NULL;
 
-    for(int i = 0; i < getLength(tr->segments); i++){
-        points += tr->segments[i].length;
-        printf("%d\n", tr->segments[i].length);
+    while((current = nextElement(&iter)) != NULL){
+        points += getLength(current->waypoints);
     }
+    
 
     if(loop){
         strcpy(loopVal, "true");
@@ -1486,7 +1489,7 @@ char* trackToJSON(const Track *tr){
         strcpy(loopVal, "false");
     }
 
-    sprintf(string, "{\"name\":\"%s\",\"len\":%.1f,\"loop\":%s}", name, length, loopVal);
+    sprintf(string, "{\"name\":\"%s\",\"len\":%.1f,\"loop\":%s, \"points\":%d}", name, length, loopVal, points);
     free(name);
     return string;
 }
