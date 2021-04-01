@@ -133,23 +133,32 @@ app.get("/changeV", function(req, res){
   const Tloop = [];
   const Tpoints = [];
   const Tlength = [];
-  let Rjson = JSON.parse(libray.routes(req.query.name));
+  
+  let Rjson = JSON.parse(library.routes("uploads/" + req.query.fileName));
+  console.log(req.query.fileName);
 
-  for (var i=0; i < Rjson.length; i++) {
-    Rname.push(JSON.parse(json[i]).name);
-    Rloop.push(JSON.parse(json[i]).loop);
-    Rlength.push(JSON.parse(json[i]).len);
-    Rpoints.push(JSON.parse(json[i].numPoints));
-    Rtype.push("Route " + i);
+  if(Rjson != "[]"){
+    console.log(Rjson);
+  //   for (var i=0; i < Rjson.length; i++) {
+  //     Rname.push(JSON.parse(json[i]).name);
+  //     Rloop.push(JSON.parse(json[i]).loop);
+  //     Rlength.push(JSON.parse(json[i]).len);
+  //     Rpoints.push(JSON.parse(json[i].numPoints));
+  //     Rtype.push("Route " + i);
+  //   }
   }
 
-  let Tjson = JSON.parse(libray.tracks(req.query.name));
-  for (var i=0; i < Tjson.length; i++) {
-    Tname.push(JSON.parse(json[i]).name);
-    Tloop.push(JSON.parse(json[i]).loop);
-    Tlength.push(JSON.parse(json[i]).len);
-    Tpoints.push(JSON.parse(json[i].numPoints));
-    Ttype.push("Track " + i);
+  let Tjson = JSON.parse(library.tracks("uploads/" + req.query.fileName));
+  
+  if(Tjson != "[]"){
+    console.log(Tjson);
+    // for (var i = 0; i < Tjson.length; i++) {
+    //   Tname.push(JSON.parse(json[i]).name);
+    //   Tloop.push(JSON.parse(json[i]).loop);
+    //   Tlength.push(JSON.parse(json[i]).len);
+    //   Tpoints.push(JSON.parse(json[i].numPoints));
+    //   Ttype.push("Track " + i);
+    // }
   }
 
   res.send({

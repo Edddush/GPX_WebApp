@@ -41,7 +41,6 @@
 
 jQuery(document).ready(function(){
   getFileLog();
-  changeView();
 });
 
 
@@ -83,7 +82,7 @@ function getFileLog(){
         $("#dropdown").append(dropdown);
       }
 
-      $("button.menuitem").click(function () {
+      $("button.dropdown").click(function () {
         updateTable($(this)[0].innerHTML);
       });
     },
@@ -93,14 +92,17 @@ function getFileLog(){
   });    
 }
 
-function updateTable(nameOfFile){
+function updateTable(nameOfFile){ 
   $("#GPXviewPanel")[0].innerHTML = nameOfFile;
   
   $.ajax({
     type: "get",
+    url: "/changeV",
     datatype: "json",
     data: {fileName : nameOfFile},
+    
     success: function(data){
+      
       if($("#routes").children().length > 0){
         $("#routes").children().empty();
       }
@@ -108,16 +110,41 @@ function updateTable(nameOfFile){
       let r_type = data.Rcurrent;
       let r_names = data.Rname;
       let r_loop = data.Risloop;
-      let r_pts = data.Rwpts;
-      let r_lens = dataRlens;
+      let r_points = data.Rwpts;
+      let r_lens = data.Rlens;
 
       let t_type = data.Tcurrent;
       let t_names = data.Tnames;
       let t_loop = data.Tisloop;
       let t_points = data.Twpts;
       let t_lens = data.Tlens;
-    }
+      
+      // console.log(r_names);
+      // console.log(t_names);
 
-
+    //   for(let i in r_names){
+    //     let theRows = "<tr>";
+    //     theRows += "<td style= 'width: 80px; text-align: center;'>" + r_type[i] + "</td>";
+    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_names[i] + "</td>";        
+    //     theRows += "<td style= 'width: 80px; text-align: center;'>" + r_points[i] + "</td>";
+    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_lens[i] + "</td>";
+    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_loop[i] + "</td>";
+    //     theRows += "</tr>";
+    //     $("#routes").append(theRows);
+    //   }
+    
+    //   for(let i in t_names){
+    //     let theRows = "<tr>";
+    //     theRows += "<td style= 'text-align: center;'>" + t_type[i] + "</td>";
+    //     theRows += "<td style= 'text-align: center;'>" + t_names[i] + "</td>";        
+    //     theRows += "<td style= 'text-align: center;'>" + t_points[i] + "</td>";
+    //     theRows += "<td style= 'text-align: center;'>" + t_lens[i] + "</td>";
+    //     theRows += "<td style= 'text-align: center;'>" + t_loop[i] + "</td>";
+    //     theRows += "</tr>";
+    //     $("#routes").append(theRows);
+    //   }
+    }, fail: function (error) {
+      console.log(error);
+    },
   });
 }
