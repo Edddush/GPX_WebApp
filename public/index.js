@@ -40,10 +40,84 @@
 // });
 
 jQuery(document).ready(function(){
-
-    $("#fileLog").click(function () {
-        $("#1").slideToggle("slow");
-    });
-
-
+  getFileLog();
+  changeView();
 });
+
+
+// Populate first table
+function getFileLog(){
+  $.ajax({
+    type: "get",
+    datatype: "json",
+    url: "/retrieveFiles",
+
+    success: function(data){
+      let names = data.names
+      let rtes = data.routes
+      let trks = data.tracks
+      let wpts = data.points
+      let version = data.vers
+      let creator = data.crea
+
+      if (names.length === 0) {
+        $("#filelogTable").append( "<h3 style= 'text-align: center'> No Files </h3>");
+      }
+  
+      if (names.length >= 2) { 
+        $(".scroll").css("height", "330px"); 
+      }
+  
+      for(let i in names) {
+        let theRows = "<tr>";
+        theRows += "<td style= 'width: 80px; text-align: center;' > <a href=" + names[i] + ' download ">' + names[i] + "</a></td>";
+        theRows += "<td style= 'width: 40px; text-align: center;'>" + version[i] + "</td>";        
+        theRows += "<td style= 'width: 80px; text-align: center;'>" + creator[i] + "</td>";
+        theRows += "<td style= 'width: 40px; text-align: center;'>" + wpts[i] + "</td>";
+        theRows += "<td style= 'width: 40px; text-align: center;'>" + rtes[i] + "</td>";
+        theRows += "<td style= 'width: 40px; text-align: center;'>" + trks[i] + "</td>";
+        theRows += "</tr>";
+
+        $("#files").append(theRows);
+        let dropdown = `<button class='dropdown-item dropdown'>` + names[i] + "</button>";
+        $("#dropdown").append(dropdown);
+      }
+
+      $("button.menuitem").click(function () {
+        updateTable($(this)[0].innerHTML);
+      });
+    },
+    error: function (error) {
+      console.log(error);
+    },
+  });    
+}
+
+function updateTable(nameOfFile){
+  $("#GPXviewPanel")[0].innerHTML = nameOfFile;
+  
+  $.ajax({
+    type: "get",
+    datatype: "json",
+    data: {fileName : nameOfFile},
+    success: function(data){
+      if($("#routes").children().length > 0){
+        $("#routes").children().empty();
+      }
+      
+      let r_type = data.Rcurrent;
+      let r_names = data.Rname;
+      let r_loop = data.Risloop;
+      let r_pts = data.Rwpts;
+      let r_lens = dataRlens;
+
+      let t_type = data.Tcurrent;
+      let t_names = data.Tnames;
+      let t_loop = data.Tisloop;
+      let t_points = data.Twpts;
+      let t_lens = data.Tlens;
+    }
+
+
+  });
+}

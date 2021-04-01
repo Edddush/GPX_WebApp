@@ -70,56 +70,112 @@ app.get('/uploads/:name', function(req , res){
 });
 
 //******************** Your code goes here ********************
+
 let library = ffi.Library("./libgpxparser.so", {
-  createGPXdoc: ["pointer", ["string"]]
-  // GPXtoJSON: ["string", ["pointer"]],
+  'createGPXdoc': ["pointer", ["string"]],
+  'GPXtoJSON': ["string", ["pointer"]],
+  'validGPXJSON': ["string", ["string", "string"]],
+  'validateGPXDoc': ["int", ["pointer", "string"]],
+  'validGPX' : ["int", ["string", "string"]],
+  'routes' : ["string", ["string"]],
+  'tracks' : ["string", ["string"]]
 });
 
-
-function validateExt(file) {
+function checkExtension(file) {
   if (file.slice(file.length - 3, file.length) !== "gpx") {
     return false;
   }
   return true;
 }
 
-let descJSON = sharedLib.GPXtoJSON();
-let doc = library.createGPXdoc(file.name);
-let descJSON = library.GPXtoJSON(doc);
-let family = JSON.parse(descJSON);
+app.get("/retrieveFiles", function(err, res){
+  const arrayOfFiles = [];
+  const version = [];
+  const creator = [];
+  const rte = [];
+  const trk = [];
+  const wpt = [];
+  
+  fs.readdir("uploads/", (err, files) => {
+    files.forEach((readFile) => {
+      let json = library.validGPXJSON("uploads/" + readFile, "gpx.xsd");
 
-
-//Iterate through the array for-of loop
-console.log("\n\nUsing for-of loop\n");
-let gen = 1;
-
-for (let generation of family){
-	console.log("Generation "+ gen);
-
-	for (let ind of generation){
-		//Let JavaScript display the object using its default string representation
-		console.log(ind);
-
-		//Display instance variables of the object
-		console.log("Given name: "+ind.name);
-		// console.log("Surname: "+ind.surname);
-
-	}
-	gen += 1;
-}
-
-//Sample endpoint
-app.get('/end1', function(req , res){
-  let retStr = req.query.data1 + " " + req.query.data2;
-  res.send(
-    {
-      somethingElse: retStr
-    }
-  );
+      if(checkExtension("uploads/" + readFile) && json != "{}"){
+        arrayOfFiles.push(readFile);
+        version.push(JSON.parse(json).version);
+        creator.push(JSON.parse(json).creator);
+        rte.push(JSON.parse(json).numRoutes);
+        trk.push(JSON.parse(json).numTracks);
+        wpt.push(JSON.parse(json).numWaypoints);
+      } 
+    });
+    res.send({
+      names: arrayOfFiles,
+      vers: version,
+      crea: creator,
+      routes: rte,
+      tracks: trk,
+      points: wpt,
+    });
+  });
 });
 
 
-console.log("ffiTest.js: sharedLib.getDesc() returned "+descJSON+"\n");
+app.get("/changeV", function(req, res){
+  const Rtype = [];
+  const Rname = [];
+  const Rloop = [];
+  const Rpoints = [];
+  const Rlength = [];
+
+  const Ttype = [];
+  const Tname = [];
+  const Tloop = [];
+  const Tpoints = [];
+  const Tlength = [];
+  let Rjson = JSON.parse(libray.routes(req.query.name));
+
+  for (var i=0; i < Rjson.length; i++) {
+    Rname.push(JSON.parse(json[i]).name);
+    Rloop.push(JSON.parse(json[i]).loop);
+    Rlength.push(JSON.parse(json[i]).len);
+    Rpoints.push(JSON.parse(json[i].numPoints));
+    Rtype.push("Route " + i);
+  }
+
+  let Tjson = JSON.parse(libray.tracks(req.query.name));
+  for (var i=0; i < Tjson.length; i++) {
+    Tname.push(JSON.parse(json[i]).name);
+    Tloop.push(JSON.parse(json[i]).loop);
+    Tlength.push(JSON.parse(json[i]).len);
+    Tpoints.push(JSON.parse(json[i].numPoints));
+    Ttype.push("Track " + i);
+  }
+
+  res.send({
+    Rcurrent : Rtype,
+    Rnames : Rname,
+    Risloop: Rloop,
+    Rwpts: Rpoints,
+    Rlens: Rlength,
+
+    Tcurrent : Ttype,
+    Tnames : Tname,
+    Tisloop: Tloop,
+    Twpts: Tpoints,
+    Tlens: Tlength,
+  })
+});
+
+
+app.get("/validate", function (req, res) {
+  let filename = req.query.name;
+  let obtain = library.validGPX("uploads/" + filename, "gpx.xsd");
+  console.log(obtain);
+  res.send({
+    obtain: obtain,
+  });
+});
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);

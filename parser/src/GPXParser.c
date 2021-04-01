@@ -1764,3 +1764,44 @@ Route* JSONtoRoute(const char* gpxString){
     free(parameters);
     return rte;
 }
+// ===================== A3 ======================
+
+char * validGPXJSON(char * nameOfFile){
+    GPXdoc * doc = createValidGPXdoc(nameOfFile, "gpx.xsd");
+    char * json = GPXtoJSON(doc);
+    
+    if(doc != NULL){
+        deleteGPXdoc(doc);
+    }
+    return json;
+}
+
+GPXdoc validGPX(char * nameOfFile, char * schema){
+    GPXdoc new = *createValidGPXdoc(nameOfFile, schema);;
+    return new;
+}
+
+char * routes(char * nameOfFile){
+    GPXdoc * doc = NULL;
+    doc = createGPXdoc(nameOfFile);
+    char * json = routeListToJSON(doc->routes);
+
+    if(doc != NULL){
+        deleteGPXdoc(doc);
+    }
+
+    return json;    
+}
+
+char * tracks(char * nameOfFile){
+    GPXdoc * doc = NULL;
+    doc = createGPXdoc(nameOfFile);
+    char * json = trackListToJSON(doc->tracks);
+
+    if(doc != NULL){
+        deleteGPXdoc(doc);
+    }
+
+    return json;    
+}
+

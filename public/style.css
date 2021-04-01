@@ -12,6 +12,20 @@ body {
     line-height: 1.75;
     background-color: #FFFFFF;
 }
+
+.table1 {
+    overflow:scroll;
+    height:100px;
+}
+
+.scroll {
+    height: 100x;
+    /* position: relative;
+    margin: 0 auto;
+    overflow: auto; */
+    overflow: scroll;
+}
+
 a:link:hover {
     -webkit-transition: all 0.3s ease;
     -moz-transition: all 0.3s ease;

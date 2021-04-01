@@ -434,5 +434,10 @@ void deleteTrack(void* data);
 char* trackToString(void* data);
 int compareTracks(const void *first, const void *second);
 
-
+//==============A3============
+GPXdoc validGPX(char * nameOfFile, char * schema);
+char * validGPXJSON(char * nameOfFile);
+// bool checkExtension(char * fileName);
+char * routes(char * nameOfFile);
+char * tracks(char * nameOfFile);
 #endif
