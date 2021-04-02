@@ -3,68 +3,68 @@
 // // int convertToxml(GPXdoc * );
 // // int validate_xml(xmlDocPtr , char *  );
 
-// // int main(int argc, char **argv){
-// //     //GPXdoc * test = createGPXdoc(argv[1]);
-// //     GPXdoc * test = createValidGPXdoc(argv[1], "gpx.xsd");
+int main(int argc, char **argv){
+    //GPXdoc * test = createGPXdoc(argv[1]);
+    GPXdoc * test = createValidGPXdoc(argv[1], "gpx.xsd");
 
 
-// //     //Route  * newRte = getRoute(test, "Some route");
+    //Route  * newRte = getRoute(test, "Some route");
 
 
-// //     Route * newRte = NULL;
-// //     Track * newTrk = NULL;
-// //     ListIterator iter1 = createIterator((List *) test->routes);
-// //     ListIterator iter2 = createIterator((List *) test->tracks);
-// //     char * tet = routeListToJSON(test->routes);
-// //     char * tet2 = trackListToJSON(test->tracks);
-// //     char * t = GPXtoJSON(test);
-// //     // printf("%s\n", tet);
-// //     free(tet);
-// //     // printf("%s\n", tet2);
-// //     free(tet2);
-// //     // printf("%s\n", t);
+    Route * newRte = NULL;
+    Track * newTrk = NULL;
+    ListIterator iter1 = createIterator((List *) test->routes);
+    ListIterator iter2 = createIterator((List *) test->tracks);
+    char * tet = routeListToJSON(test->routes);
+    char * tet2 = trackListToJSON(test->tracks);
+    char * t = GPXtoJSON(test);
+    // printf("%s\n", tet);
+    free(tet);
+    // printf("%s\n", tet2);
+    free(tet2);
+    // printf("%s\n", t);
 
-// //     char strr[] = "{\"version\":1.1,\"creator\":\"WebTool\"}";
-// //     char st[]= "{\"name\":\"Reynolds walk\"}";
-// //     char s[] = "{\"lat\":43.537299,\"lon\":-80.218267}";
+    char strr[] = "{\"version\":1.1,\"creator\":\"WebTool\"}";
+    char st[]= "{\"name\":\"Reynolds walk\"}";
+    char s[] = "{\"lat\":43.537299,\"lon\":-80.218267}";
 
-// //     GPXdoc * t2 = JSONtoGPX(strr);
-// //     Route * r = JSONtoRoute(st);
-// //     Waypoint * p = JSONtoWaypoint(s);
+    GPXdoc * t2 = JSONtoGPX(strr);
+    Route * r = JSONtoRoute(st);
+    Waypoint * p = JSONtoWaypoint(s);
 
-// //     printf("%f %s\n", t2->version, t2->creator);
-// //     printf("%s\n", r->name);
-// //     printf("%f %f\n", p->latitude, p->longitude);
-// //     free(t);
-// //     deleteGPXdoc(t2);
-// //     deleteRoute(r);
-// //     deleteWaypoint(p);
-// //     // if((newRte = nextElement(&iter1)) ){ //&& (newTrk = nextElement(&iter2))
-// //     //    // char * tet = routeListToJSON(newRte);
-// //     //     char * tet2 = trackToJSON(newTrk);
+    printf("%f %s\n", t2->version, t2->creator);
+    printf("%s\n", r->name);
+    printf("%f %f\n", p->latitude, p->longitude);
+    free(t);
+    deleteGPXdoc(t2);
+    deleteRoute(r);
+    deleteWaypoint(p);
+    // if((newRte = nextElement(&iter1)) ){ //&& (newTrk = nextElement(&iter2))
+    //    // char * tet = routeListToJSON(newRte);
+    //     char * tet2 = trackToJSON(newTrk);
 
-// //     //     printf("%f\n", getRouteLen(newRte));
-// //     //     printf("%f\n", getTrackLen(newTrk));
-// //     //     printf("%d\n", numRoutesWithLength(test, 151, 10));
-// //     //     printf("%d\n", numTracksWithLength(test, 380, 10));
-// //     //     printf("%s\n", tet);
-// //     //     printf("%s\n", tet2);
+    //     printf("%f\n", getRouteLen(newRte));
+    //     printf("%f\n", getTrackLen(newTrk));
+    //     printf("%d\n", numRoutesWithLength(test, 151, 10));
+    //     printf("%d\n", numTracksWithLength(test, 380, 10));
+    //     printf("%s\n", tet);
+    //     printf("%s\n", tet2);
 
-// //     //     free(tet2);
-// //     //     free(tet);
-// //     // }
+    //     free(tet2);
+    //     free(tet);
+    // }
 
 
-// //     validateGPXDoc(test, "gpx.xsd");
-// //     writeGPXdoc(test, "output.gpx");
-// //     // printf("%f\n", round10(403));
-// //     // printf("%f\n", round10(404));
-// //     // printf("%f\n", round10(404.5));
-// //     // printf("%f\n", round10(405));
-// //     // printf("%f\n", round10(409));
+    validateGPXDoc(test, "gpx.xsd");
+    writeGPXdoc(test, "output.gpx");
+    // printf("%f\n", round10(403));
+    // printf("%f\n", round10(404));
+    // printf("%f\n", round10(404.5));
+    // printf("%f\n", round10(405));
+    // printf("%f\n", round10(409));
 
-// //     deleteGPXdoc(test);
-// // }
+    deleteGPXdoc(test);
+}
 
 // int main(int argc, char **argv) {
 //     GPXdoc * doc = createValidGPXdoc(argv[1], "gpx.xsd");

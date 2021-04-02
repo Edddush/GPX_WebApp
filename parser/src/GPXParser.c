@@ -1665,7 +1665,7 @@ void addRoute(GPXdoc* doc, Route* rt){
 
 int parseJSON(char *input, char **arguments){
 
-    char *token;
+    char *token = NULL;
     int argumentIndex = 0;
     const char *delimiter = ",\"{}:";
 
@@ -1673,14 +1673,14 @@ int parseJSON(char *input, char **arguments){
     token = strtok(input, delimiter);
     arguments[argumentIndex] = token;
     argumentIndex++;
-
+    
     /* walk through other tokens */
     while(token != NULL) {
         token = strtok(NULL, delimiter);
         if ( token != NULL ) {
             arguments[argumentIndex] = token;
             argumentIndex++;
-        }
+        } 
     }
 
     return argumentIndex;
@@ -1702,7 +1702,7 @@ GPXdoc* JSONtoGPX(const char* gpxString){
     gpxdoc->tracks = initializeList(&trackToString, &deleteTrack, &compareTracks);
     gpxdoc->waypoints = initializeList(&waypointToString, &deleteWaypoint, &compareWaypoints);
     strcpy(gpxdoc->namespace, "http://www.topografix.com/GPX/1/1");
-
+    
     char ** parameters = malloc(1024);
 
     int length = parseJSON((char *)gpxString, parameters);
@@ -1773,6 +1773,35 @@ Route* JSONtoRoute(const char* gpxString){
     free(parameters);
     return rte;
 }
+
+// Route* fromJson( char* gpxString){
+//     if(gpxString == NULL){
+//         return NULL;
+//     }
+
+//     Route *rte = malloc(sizeof(Route));
+//     rte->waypoints = initializeList(&waypointToString, &deleteWaypoint, &compareWaypoints);
+//     rte->otherData = initializeList(&gpxDataToString, &deleteGpxData, &compareGpxData);
+
+//     char ** parameters = malloc(1024);
+
+//     int length = parseJSON((char *)gpxString, parameters);
+
+//     if(length == 2){
+//         rte->name = malloc(256);
+//         strcpy(rte->name , parameters[1]);
+//     }
+
+//     free(parameters);
+//     return rte;
+// }
+
+Route* noName(){
+    Route *rte = malloc(sizeof(Route));
+    rte->waypoints = initializeList(&waypointToString, &deleteWaypoint, &compareWaypoints);
+    rte->otherData = initializeList(&gpxDataToString, &deleteGpxData, &compareGpxData);
+    return rte;
+}
 // ===================== A3 ======================
 
 char * validGPXJSON(char * nameOfFile){
@@ -1785,9 +1814,14 @@ char * validGPXJSON(char * nameOfFile){
     return json;
 }
 
-GPXdoc validGPX(char * nameOfFile, char * schema){
-    GPXdoc new = *createValidGPXdoc(nameOfFile, schema);;
-    return new;
+int validGPX(char * nameOfFile, char * schema){
+    GPXdoc * new = createGPXdoc(nameOfFile);
+    int boolean = validateGPXDoc(new, schema);
+   
+    if(new != NULL){
+        deleteGPXdoc(new);
+    }
+    return boolean;
 }
 
 char * routes(char * nameOfFile){
@@ -1813,3 +1847,23 @@ char * tracks(char * nameOfFile){
     return json;    
 }
 
+int newGpx(char * nameOfFile, char * schema){
+    char string[] = "{\"version\":1.1,\"creator\":\"gpsView\"}";
+    GPXdoc * new = JSONtoGPX(string);
+    int value = writeGPXdoc(new, nameOfFile);
+    value = validateGPXDoc(new, schema);
+
+    return value;
+}
+
+int newRoute(char * nameOfFile, char * json){
+    GPXdoc * doc = createGPXdoc(nameOfFile);
+    Waypoint * pt = JSONtoWaypoint(json);
+    char string [] = "{name:None}";
+    Route * new = JSONtoRoute(string);
+    
+    addWaypoint(new, pt);
+    addRoute(doc, new);
+    int value = writeGPXdoc(doc, nameOfFile);
+    return value;
+}   

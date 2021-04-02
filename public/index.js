@@ -41,6 +41,9 @@
 
 jQuery(document).ready(function(){
   getFileLog();
+  uploadFile();
+  createFile();
+  current();
 });
 
 
@@ -63,8 +66,9 @@ function getFileLog(){
         $("#filelogTable").append( "<h3 style= 'text-align: center'> No Files </h3>");
       }
   
-      if (names.length >= 2) { 
-        $(".scroll").css("height", "330px"); 
+      if (names.length > 2) { 
+        $(".scroll").css("height", "330px");
+        // $(".scroll").css("width", "600px"); 
       }
   
       for(let i in names) {
@@ -80,6 +84,8 @@ function getFileLog(){
         $("#files").append(theRows);
         let dropdown = `<button class='dropdown-item dropdown'>` + names[i] + "</button>";
         $("#dropdown").append(dropdown);
+        let available = `<option>` + names[i] + "</option>";
+        $("#newRoute").append(available);
       }
 
       $("button.dropdown").click(function () {
@@ -108,7 +114,7 @@ function updateTable(nameOfFile){
       }
       
       let r_type = data.Rcurrent;
-      let r_names = data.Rname;
+      let r_names = data.Rnames;
       let r_loop = data.Risloop;
       let r_points = data.Rwpts;
       let r_lens = data.Rlens;
@@ -118,33 +124,161 @@ function updateTable(nameOfFile){
       let t_loop = data.Tisloop;
       let t_points = data.Twpts;
       let t_lens = data.Tlens;
-      
-      // console.log(r_names);
-      // console.log(t_names);
 
-    //   for(let i in r_names){
-    //     let theRows = "<tr>";
-    //     theRows += "<td style= 'width: 80px; text-align: center;'>" + r_type[i] + "</td>";
-    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_names[i] + "</td>";        
-    //     theRows += "<td style= 'width: 80px; text-align: center;'>" + r_points[i] + "</td>";
-    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_lens[i] + "</td>";
-    //     theRows += "<td style= 'width: 40px; text-align: center;'>" + r_loop[i] + "</td>";
-    //     theRows += "</tr>";
-    //     $("#routes").append(theRows);
-    //   }
+      for(let i in r_names){
+        let theRows = "<tr>";
+        theRows += "<td style= ' text-align: center;'>" + r_type[i] + "</td>";
+        theRows += "<td style= ' text-align: center;'>" + r_names[i] + "</td>";        
+        theRows += "<td style= ' text-align: center;'>" + r_points[i] + "</td>";
+        theRows += "<td style= ' text-align: center;'>" + r_lens[i] + "</td>";
+        theRows += "<td style= ' text-align: center;'>" + r_loop[i] + "</td>";
+        theRows +=  "<td style= ' text-align: center;'>" 
+        theRows += "<button 'type= button class=btn btn-secondary btn-sm'>"+ "Rename </button>";
+        theRows += "<button 'type= button  class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
+        theRows += "</td>"
+        theRows += "</tr>";
+        $("#routes").append(theRows);
+
+      }
     
-    //   for(let i in t_names){
-    //     let theRows = "<tr>";
-    //     theRows += "<td style= 'text-align: center;'>" + t_type[i] + "</td>";
-    //     theRows += "<td style= 'text-align: center;'>" + t_names[i] + "</td>";        
-    //     theRows += "<td style= 'text-align: center;'>" + t_points[i] + "</td>";
-    //     theRows += "<td style= 'text-align: center;'>" + t_lens[i] + "</td>";
-    //     theRows += "<td style= 'text-align: center;'>" + t_loop[i] + "</td>";
-    //     theRows += "</tr>";
-    //     $("#routes").append(theRows);
-    //   }
+      for(let i in t_names){
+        let theRows = "<tr>";
+        theRows += "<td style= 'text-align: center;'>" + t_type[i] + "</td>";
+        theRows += "<td style= 'text-align: center;'>" + t_names[i] + "</td>";        
+        theRows += "<td style= 'text-align: center;'>" + t_points[i] + "</td>";
+        theRows += "<td style= 'text-align: center;'>" + t_lens[i] + "</td>";
+        theRows += "<td style= 'text-align: center;'>" + t_loop[i] + "</td>";
+        theRows +=  "<td style= ' text-align: center;'>" 
+        theRows += "<button 'type= button class=btn btn-secondary btn-sm'>"+ 'Rename' + "</button>";
+        theRows += "<button 'type= button id=" + t_type[i] + " class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
+        theRows += "</td>"
+        theRows += "</tr>";
+        $("#routes").append(theRows);
+      }
     }, fail: function (error) {
       console.log(error);
     },
   });
 }
+
+function uploadFile(){
+  //     // Event listener form example , we can use this instead explicitly listening for events
+//     // No redirects if possible
+  $('#uploadForm').submit(function(event){
+      event.preventDefault();
+
+      if($("#selectFile")[0].value.length > 0){
+        let selectFile = $("#selectFile")[0].files[0];
+        console.log(selectFile.name + " waiting validation ");
+        let files = new FormData();
+        files.append("uploadFile", selectFile);
+        // for (var p of files) {
+        //   console.log(p);
+        // }
+        //Pass data to the Ajax call, so it gets passed to the server
+        $.ajax({
+          type: "post",
+          url: "/upload",
+          data: files,
+          contentType: false,
+          processData: false,
+          success: function(){     
+            $.ajax({
+              type: "get",
+              url: "/validate",
+              data: {fileName: selectFile.name},
+              datatype: "json",
+              success: function(data){
+                if(data.obtain === 1){
+                  alert(selectFile.name + " ready to use");
+                  location.reload();
+                } else{
+                  alert(selectFile.name + " is invalid (check gpx extension and format)");
+                  $.ajax({
+                    type: "post",
+                    url: "/removeFromServer",
+                    data: { toDelete: selectFile.name},
+                    success: function(data){
+                      console.log(data.message);
+                    },
+                    fail: function(error){
+                      console.log(error);
+                    }
+                  });
+                }
+              }
+            });
+          },
+          fail: function(error){ 
+            alert(selectFile.name + "cannot upload");
+            console.log(error);
+          } 
+        //Create an object for connecting to another waypoint
+        });
+      } else{
+        alert("Choose a file to proceed");
+      }
+  });
+}
+
+function createFile(){
+    // Event listener form example , we can use this instead explicitly listening for events
+    // No redirects if possible
+    $('#fileInput').submit(function(event){
+        event.preventDefault();
+       
+        if($("#userFileName")[0].value.length > 0){
+          let input = $("#userFileName")[0].value;
+          //Pass data to the Ajax call, so it gets passed to the server
+          // console.log(input);
+          $.ajax({
+            type: "post",
+            url: "/creategpx",
+            datatype: "json",
+            data:{naming :  $("#userFileName")[0].value + ".gpx"},
+            success: function(){
+              alert("File " + input + ".gpx has been uploaded");
+              location.reload();
+            }, fail: function(){
+              alert("The file could not be uploaded, try again.");
+            }
+          //Create an object for connecting to another waypoint
+          });
+        } else{
+          alert("Please fill out the required fields: filename");
+        }
+    });
+}
+
+function current(){
+  $("#submitRoute").click(function(event){
+    let nameOfFile = $("#newRoute")[0].selectedOptions[0].innerHTML;
+    let info = "{";
+    let long = $(`#lon`);
+    let lati = $(`#lat`);
+
+    if(long[0].value < 180 && long[0].value > -180
+      && lati[0].value < 90 && lati[0].value > -90 ){
+        info += "lat:" + lati[0].value;
+        info += ",lon:" + long[0].value;
+        info += "}";
+
+        $.ajax({
+          type:"post",
+          datatype:"json",
+          url: "/newRoute",
+          data: {inputFile : nameOfFile, wpt: info},
+          success: function(){
+            location.reload();
+          }, fail: function(){
+            alert("Failed to add the route");
+          },
+        });
+    } else{
+      alert("values out of range -/+180 lon -/+90 lat");
+    }
+  });
+}
+// function utf8_for_xml($string){
+//   return preg_replace ('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $string);
+// }

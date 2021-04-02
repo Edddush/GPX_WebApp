@@ -435,9 +435,11 @@ char* trackToString(void* data);
 int compareTracks(const void *first, const void *second);
 
 //==============A3============
-GPXdoc validGPX(char * nameOfFile, char * schema);
+int validGPX(char * nameOfFile, char * schema);
 char * validGPXJSON(char * nameOfFile);
 // bool checkExtension(char * fileName);
 char * routes(char * nameOfFile);
 char * tracks(char * nameOfFile);
+int newGpx(char * nameOfFile, char * schema);
+int newRoute(char * nameOfFile, char * json);
 #endif

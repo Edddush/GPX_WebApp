@@ -4,6 +4,7 @@
 const ffi = require('ffi-napi');
 
 // Express App (Routes)
+
 const express = require("express");
 const app     = express();
 const path    = require("path");
@@ -15,6 +16,7 @@ app.use(express.static(path.join(__dirname+'/uploads')));
 // Minimization
 const fs = require('fs');
 const JavaScriptObfuscator = require('javascript-obfuscator');
+const lib = require('express-fileupload');
 
 // Important, pass in port as in `npm run dev 1234`, do not change
 const portNum = process.argv[2];
@@ -70,15 +72,16 @@ app.get('/uploads/:name', function(req , res){
 });
 
 //******************** Your code goes here ********************
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
 
 let library = ffi.Library("./libgpxparser.so", {
-  'createGPXdoc': ["pointer", ["string"]],
-  'GPXtoJSON': ["string", ["pointer"]],
   'validGPXJSON': ["string", ["string", "string"]],
-  'validateGPXDoc': ["int", ["pointer", "string"]],
   'validGPX' : ["int", ["string", "string"]],
   'routes' : ["string", ["string"]],
-  'tracks' : ["string", ["string"]]
+  'tracks' : ["string", ["string"]],
+  'newGpx' : ["int", ["string", "string"]],
+  'newRoute' :["int", ["string", "string"]]
 });
 
 function checkExtension(file) {
@@ -135,30 +138,29 @@ app.get("/changeV", function(req, res){
   const Tlength = [];
   
   let Rjson = JSON.parse(library.routes("uploads/" + req.query.fileName));
-  console.log(req.query.fileName);
-
-  if(Rjson != "[]"){
-    console.log(Rjson);
-  //   for (var i=0; i < Rjson.length; i++) {
-  //     Rname.push(JSON.parse(json[i]).name);
-  //     Rloop.push(JSON.parse(json[i]).loop);
-  //     Rlength.push(JSON.parse(json[i]).len);
-  //     Rpoints.push(JSON.parse(json[i].numPoints));
-  //     Rtype.push("Route " + i);
-  //   }
+  
+  if(Rjson !== '[]'){
+    for (var i=0; i < Rjson.length; i++) {
+      Rname.push(Rjson[i].name);
+      Rloop.push(Rjson[i].loop);
+      Rlength.push(Rjson[i].len);
+      Rpoints.push(Rjson[i].numPoints);
+      var index = parseInt(i) + 1;
+      Rtype.push("Route " + index);
+    }
   }
 
   let Tjson = JSON.parse(library.tracks("uploads/" + req.query.fileName));
-  
-  if(Tjson != "[]"){
-    console.log(Tjson);
-    // for (var i = 0; i < Tjson.length; i++) {
-    //   Tname.push(JSON.parse(json[i]).name);
-    //   Tloop.push(JSON.parse(json[i]).loop);
-    //   Tlength.push(JSON.parse(json[i]).len);
-    //   Tpoints.push(JSON.parse(json[i].numPoints));
-    //   Ttype.push("Track " + i);
-    // }
+
+  if(Tjson !== '[]'){
+    for (var i = 0; i < Tjson.length; i++) {
+      Tname.push(Tjson[i].name);
+      Tloop.push(Tjson[i].loop);
+      Tlength.push(Tjson[i].len);
+      Tpoints.push(Tjson[i].points);
+      var index = parseInt(i) + 1;
+      Ttype.push("Track " + index);
+    }
   }
 
   res.send({
@@ -173,18 +175,46 @@ app.get("/changeV", function(req, res){
     Tisloop: Tloop,
     Twpts: Tpoints,
     Tlens: Tlength,
-  })
-});
-
-
-app.get("/validate", function (req, res) {
-  let filename = req.query.name;
-  let obtain = library.validGPX("uploads/" + filename, "gpx.xsd");
-  console.log(obtain);
-  res.send({
-    obtain: obtain,
   });
 });
+
+
+app.get("/validate", function (req, res){
+  let valid = library.validGPX("uploads/" + req.query.fileName, "gpx.xsd");
+  if(valid == 0){
+    console.log("Invalid gpx");
+  } else{
+    console.log("Valid gpx");
+  }
+  
+  res.send({
+    obtain: valid,
+  });
+});
+
+app.post('/removeFromServer', function(req, res){
+  let pop = req.body.toDelete;
+  fs.unlink('uploads/'+ pop, function(err){
+    if(err) {
+      throw err;
+    }
+  })
+  res.send({
+    message: "File "+ req.body.toDelete + " has been removed from server",
+  });
+});
+
+app.post("/creategpx", (req, res)=>{
+  let input = req.body.naming;
+  library.newGpx("uploads/" + input, "gpx.xsd");
+  res.send("Created a New GPX");
+});
+
+app.post("/newRoute", (req, res)=>{
+  library.newRoute("uploads/" + req.body.inputFile, req.body.wpt);
+  res.send("Created a new Route");
+});
+
 
 app.listen(portNum);
 console.log('Running app at localhost: ' + portNum);

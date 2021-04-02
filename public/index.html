@@ -45,7 +45,7 @@
                 method='post'
                 encType="multipart/form-data">
                 <div class="form-group">
-                    <input type="file" name="uploadFile" class="btn btn-dark">
+                    <input type="file" name="newFile" class="btn btn-dark" id="selectFile">
                     <input type='submit' value='Upload' class="btn btn-primary">
                 </div>
             </form>
@@ -79,31 +79,7 @@
                         </thead>
 
                         <tbody id="routes">
-                            <tr>
-                            <th scope="row" style="text-align: center;">Route 0</th>
-                            <td style = "text-align: center;">No data</td>
-                            <td style = "text-align: center;">0</td>
-                            <td style = "text-align: center;">0</td>
-                            <td style = "text-align: center;">false</td>
-                            <td style = "text-align: center;">
-                                <button type="button" class="btn btn-secondary btn-sm" >Rename</button>
-                                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Show Other Data</button>
-                                <!-- <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">close</button> -->
-                            </td>
-                            </tr>
 
-                            <tr>
-                            <th scope="row" style="width: 50px; text-align: center;">Route 0</th>
-                            <td style = "text-align: center;">No data</td>
-                            <td style = "text-align: center;">0</td>
-                            <td style = "text-align: center;">0</td>
-                            <td style = "text-align: center;">false</td>
-                            <td style = "text-align: center;">
-                                <button type="button" class="btn btn-secondary btn-sm" >Rename</button>
-                                <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Show Other Data</button>
-                                <!-- <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal">close</button> -->
-                            </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -111,19 +87,13 @@
         </div>
 
         <h3 style="text-align: left" id="Create GPX">Create Your own GPX</h3>
-        <form class="form-inline">
+        <form class="form-inline" id = "fileInput">
             <div class="input-group mb-2 mr-sm-2">
-                <input type="text" class="form-control" id="validationFileName" placeholder="Filename" aria-describedby="inputGroupPrepend2" required>
+                <input type="text" class="form-control" id="userFileName" placeholder="Filename" aria-describedby="inputGroupPrepend2" required>
                 <div class="input-group-prepend">
                   <span class="input-group-text" id="inputGroupPrepend2">.gpx</span>
                 </div>
               </div>
-
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormVersion" placeholder="version" required>
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormCreator" placeholder="creator" required>
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormPoints" placeholder="# of Waypoints">
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormRoutes" placeholder="# of Routes">
-            <input type="text" class="form-control mb-2 mr-sm-2" id="inlineFormTracks" placeholder="# of Tracks">
 
             <button type="submit" class="btn btn-primary mb-2">Create GPX</button>
         </form>
@@ -132,22 +102,17 @@
         <h3 style="text-align: left" id="Create Route">Create Your own Route</h3>
         <form class="form-inline">
             <div class="input-group mb-2 mr-sm-2" id="routeFile">
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownRoute"
-                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Select File
-                    </button>
-                    <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="dropdown">
-
-                    </div>
+                <select class="custom-select mr-sm-2" id="newRoute" required>
+                </select>
+                <div class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenuButton" id="dropdown2">
                 </div>
-
+                
+                <input type="text" class="form-control mb-2 mr-sm-2" id="lon" placeholder="Longitude" required>
+                <input type="text" class="form-control mb-2 mr-sm-2" id="lat" placeholder="Latitude" required>
             </div>
-                <input type="text" class="form-control mb-2 mr-sm-2" id="lon" placeholder="Longitude" disabled required>
 
-                <input type="text" class="form-control mb-2 mr-sm-2" id="lat" placeholder="Latitude" disabled required>
 
-            <button type="submit" class="btn btn-primary mb-2">Add route</button>
+            <button id="submitRoute" type="submit" class="btn btn-primary mb-2">Add route</button>
         </form>
 
         <h3 style="text-align: left" id="FindPath">Find Path Between</h3>

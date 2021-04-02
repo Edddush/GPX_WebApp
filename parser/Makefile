@@ -34,7 +34,7 @@ $(BIN)LinkedListAPI.o: $(SRC)LinkedListAPI.c $(INC)LinkedListAPI.h
 	$(CC) $(CFLAGS) -c -fpic -I$(INC) $(SRC)LinkedListAPI.c -o $(BIN)LinkedListAPI.o
 
 clean:
-	rm -rf $(BIN)StructListDemo $(BIN)xmlExample $(BIN)*.o $(BIN)*.so
+	rm -rf $(BIN)StructListDemo $(BIN)xmlExample $(BIN)*.o $(SHARE)*.so
 
 #This is the target for the in-class XML example
 xmlExample: $(SRC)libXmlExample.c
