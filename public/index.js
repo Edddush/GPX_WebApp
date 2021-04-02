@@ -305,11 +305,11 @@ function rename(name){
 
 $("#find").click(function (event) {
   event.preventDefault();
-  var lat1 = $("#lonstart")[0].value;
-  var lat2 = $("#latstart")[0].value;
-  var lon1 = $("#lonend")[0].value;
-  var lon2 = $("#latend")[0].value;
-  var delta = $("#delta")[0].value;
+  // var lats = $("#lonstart")[0].value;
+  // var late = $("#latstart")[0].value;
+  // var lons = $("#lonend")[0].value;
+  // var lone = $("#latend")[0].value;
+  // var delta = $("#delta")[0].value;
     for (let i = 0; i < 3; i++) {
       let theRows = "<tr>";
       theRows += "<td>" + "route " + (i + 1) + "</td>";
@@ -319,6 +319,6 @@ $("#find").click(function (event) {
       theRows += "<td>" + "true"+ "</td>";
       // let otherD = `<button type='button' class='btn btn-secondary'`
       theRows += "</tr>";
-      $("#path_view").append(theRows);
+      $("#paths").append(theRows);
     }
 });
