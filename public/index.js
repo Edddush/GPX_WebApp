@@ -126,19 +126,27 @@ function updateTable(nameOfFile){
       let t_lens = data.Tlens;
 
       for(let i in r_names){
+        let rename = "";
+        let otherData = "";
         let theRows = "<tr>";
         theRows += "<td style= ' text-align: center;'>" + r_type[i] + "</td>";
         theRows += "<td style= ' text-align: center;'>" + r_names[i] + "</td>";        
         theRows += "<td style= ' text-align: center;'>" + r_points[i] + "</td>";
         theRows += "<td style= ' text-align: center;'>" + r_lens[i] + "</td>";
         theRows += "<td style= ' text-align: center;'>" + r_loop[i] + "</td>";
-        theRows +=  "<td style= ' text-align: center;'>" 
-        theRows += "<button 'type= button class=btn btn-secondary btn-sm'>"+ "Rename </button>";
-        theRows += "<button 'type= button  class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
+        theRows +=  "<td style= ' text-align: center;'>" ;
+
+        rename += "<button 'type= button class=btn btn-secondary btn-sm'>"+ "Rename </button>";
+        theRows += rename;
+        otherData += "<button 'type= button  class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
+        theRows += otherData;
         theRows += "</td>"
         theRows += "</tr>";
         $("#routes").append(theRows);
 
+        $("button.rename").click(function () {
+          rename(r_names[i]);
+        });
       }
     
       for(let i in t_names){
@@ -150,7 +158,7 @@ function updateTable(nameOfFile){
         theRows += "<td style= 'text-align: center;'>" + t_loop[i] + "</td>";
         theRows +=  "<td style= ' text-align: center;'>" 
         theRows += "<button 'type= button class=btn btn-secondary btn-sm'>"+ 'Rename' + "</button>";
-        theRows += "<button 'type= button id=" + t_type[i] + " class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
+        theRows += "<button 'type= button class= btn btn-info btn-sm  data-dismiss= modal'>" + "Show Other Data</button>";
         theRows += "</td>"
         theRows += "</tr>";
         $("#routes").append(theRows);
@@ -279,6 +287,38 @@ function current(){
     }
   });
 }
-// function utf8_for_xml($string){
-//   return preg_replace ('/[^\x{0009}\x{000a}\x{000d}\x{0020}-\x{D7FF}\x{E000}-\x{FFFD}]+/u', ' ', $string);
-// }
+
+function rename(name){
+  console.log(name);
+
+  // $.ajax({
+  //   type: "post",
+  //   url: "/newName",
+  //   data: {inputFile : nameOfFile, name},
+  //   success: function(){
+  //     location.reload();
+  //   }, fail: function(){
+  //     alert("rename failed");
+  //   },
+  // });
+}
+
+$("#find").click(function (event) {
+  event.preventDefault();
+  var lat1 = $("#lonstart")[0].value;
+  var lat2 = $("#latstart")[0].value;
+  var lon1 = $("#lonend")[0].value;
+  var lon2 = $("#latend")[0].value;
+  var delta = $("#delta")[0].value;
+    for (let i = 0; i < 3; i++) {
+      let theRows = "<tr>";
+      theRows += "<td>" + "route " + (i + 1) + "</td>";
+      theRows += "<td>" + "Some route" + "</td>";
+      theRows += "<td>" + "5" + "</td>";
+      theRows += "<td>" + "300"+ "</td>";
+      theRows += "<td>" + "true"+ "</td>";
+      // let otherD = `<button type='button' class='btn btn-secondary'`
+      theRows += "</tr>";
+      $("#path_view").append(theRows);
+    }
+});

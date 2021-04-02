@@ -121,21 +121,40 @@
                 <div class="form-row">
                     <div class="col-md-6 mb-3">
                         <label for="lonstart">START</label>
-                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonstart" placeholder="Longitude" disabled required>
-                        <input type="text" class="form-control mb-2 mr-sm-2" id="latstart" placeholder="Latitude" disabled required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonstart" placeholder="Longitude"  required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="latstart" placeholder="Latitude"  required>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6 mb-2">
                         <label for="lonend">END</label>
-                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonend" placeholder="Longitude" disabled required>
-                        <input type="text" class="form-control mb-2 mr-sm-2" id="latend" placeholder="Latitude" disabled required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="lonend" placeholder="Longitude"  required>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="latend" placeholder="Latitude"  required>
                     </div>
                 </div>
+                
             </div>
-            <button type="submit" class="btn btn-primary mb-2">Find path</button>
+            <button id = "find" type="submit" class="btn btn-primary mb-2">Find path</button>
+            <input type="text" class="form-control mb-2 mr-sm-2" id="delta" placeholder="delta"  required>
         </form>
+
+        <table id="path" class="table table-bordered" style="table-layout: auto;">
+            <thead class="bg-light">
+                <tr>
+                    <th scope="col" style="text-align: center;">Component</th>
+                    <th scope="col" style="text-align: center;">Name</th>
+                    <th scope="col" style="text-align: center;">Number of Points</th>
+                    <th scope="col" style="text-align: center;">Length</th>
+                    <th scope="col" style="text-align: center;">Loop</th>
+                    <th scope="col" style="text-align: center;">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody id="paths">
+
+            </tbody>
+        </table>
 
     <!-- Leave me at the bottom of body -->
     <script src="/index.js"></script>

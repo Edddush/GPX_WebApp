@@ -1064,7 +1064,7 @@ bool writeGPXdoc(GPXdoc* doc, char* fileName){
     /*
      * Dumping document to stdio or file
      */
-    if(xmlSaveFormatFileEnc(fileName, xmlDoc, "UTF-8", 1) ==-1){
+    if(xmlSaveFormatFile(fileName, xmlDoc, 1) ==-1){
         xmlFreeDoc(xmlDoc);
         xmlCleanupParser();
         xmlMemoryDump();
@@ -1774,34 +1774,6 @@ Route* JSONtoRoute(const char* gpxString){
     return rte;
 }
 
-// Route* fromJson( char* gpxString){
-//     if(gpxString == NULL){
-//         return NULL;
-//     }
-
-//     Route *rte = malloc(sizeof(Route));
-//     rte->waypoints = initializeList(&waypointToString, &deleteWaypoint, &compareWaypoints);
-//     rte->otherData = initializeList(&gpxDataToString, &deleteGpxData, &compareGpxData);
-
-//     char ** parameters = malloc(1024);
-
-//     int length = parseJSON((char *)gpxString, parameters);
-
-//     if(length == 2){
-//         rte->name = malloc(256);
-//         strcpy(rte->name , parameters[1]);
-//     }
-
-//     free(parameters);
-//     return rte;
-// }
-
-Route* noName(){
-    Route *rte = malloc(sizeof(Route));
-    rte->waypoints = initializeList(&waypointToString, &deleteWaypoint, &compareWaypoints);
-    rte->otherData = initializeList(&gpxDataToString, &deleteGpxData, &compareGpxData);
-    return rte;
-}
 // ===================== A3 ======================
 
 char * validGPXJSON(char * nameOfFile){
